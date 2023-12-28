@@ -1,4 +1,9 @@
-body {
+body{
+  background-color: #2f3241;
+  padding: 0;
+  margin: 0;
+}
+/* body {
   display: flex;
   flex-direction: column;
   font-family:
@@ -16,7 +21,7 @@ body {
   background-color: #2f3241;
 }
 
-* {
+* {z
   padding: 0;
   margin: 0;
 }
@@ -26,7 +31,7 @@ ul {
 }
 
 code {
-  font-weight: 600;
+  font-weight: 600;a
   padding: 3px 5px;
   border-radius: 2px;
   background-color: #26282e;
@@ -202,4 +207,4 @@ a:hover {
   .features .feature-item {
     width: 100%;
   }
-}
+} */

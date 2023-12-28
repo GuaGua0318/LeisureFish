@@ -1,12 +1,14 @@
 import { Card, Col, Row } from 'antd'
 import React from 'react'
 import styles from './home.module.scss'
+import UserLoginHd from '@renderer/components/userLoginHd'
 
 type Props = {}
 
 export default function Home({ }: Props) {
     return (
-        <div>
+        <>
+            <UserLoginHd />
             <Row gutter={16}>
                 <Col span={8}>
                     <Card title="Card title" bordered={false} className={styles.test}>
@@ -58,6 +60,6 @@ export default function Home({ }: Props) {
                     </Card>
                 </Col>
             </Row>
-        </div>
+        </>
     )
 }

@@ -1,7 +1,7 @@
 import React, { lazy, Suspense } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 //引入组件
-import Home from '../views/Home'
+import Home from '../views/home'
 //需要懒加载的组件
 
 export default function Router() {
