@@ -8,7 +8,7 @@ const Home = () => {
   return (
     <>
       <UserLoginHd />
-      <></>
+      <DrinkRemind />
       <Row gutter={16}>
         <Col span={8}>
           <Card title="Card title" bordered={false} className={styles.test}>
