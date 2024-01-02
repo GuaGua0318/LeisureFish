@@ -1,14 +1,12 @@
-import { Button, Card, Checkbox, Form, Input, Modal, Statistic } from 'antd'
+import { Button, Card, Checkbox, Form, Input, InputNumber, Modal, Radio, Statistic, TimePicker } from 'antd'
 import type { CountdownProps } from 'antd'
 import { useState } from 'react'
-import { FieldType } from './index.d.ts'
-
 const { Countdown } = Statistic
 
 type FieldType = {
-  username?: string
-  password?: string
-  remember?: string
+  start_time?: string
+  end_time?: string
+  interval_time?: string
 }
 
 type Props = {}
@@ -16,6 +14,7 @@ const deadline = Date.now() + 1000 * 60
 
 const DrinkRemind = (props: Props) => {
   const [settingOpen, setIsSettingOpen] = useState<boolean>(false)
+  const [form] = Form.useForm();
 
   const handleSettingCancel = () => {
     setIsSettingOpen(false)
@@ -39,45 +38,67 @@ const DrinkRemind = (props: Props) => {
         <p>距离下一次喝水提醒还有</p>
         <Countdown title="Day Level" value={deadline} format="D 天 H 时 m 分 s 秒" />
       </Card>
-      <Modal title=" " open={settingOpen} onCancel={handleSettingCancel}>
-        <Form
+      <Modal title=" " open={settingOpen} onCancel={handleSettingCancel} cancelText="取消" okText="确定" onOk={() => {
+                 form.validateFields().then((values) => {
+                  // 提交表单数据到后端
+                  console.log(values);
+                  // 关闭 Modal
+                }).catch((e) => {
+                  console.log(e);
+                });
+      }}>
+        {/* <Form
           name="basic"
-          labelCol={{ span: 8 }}
-          wrapperCol={{ span: 16 }}
-          style={{ maxWidth: 600 }}
-          initialValues={{ remember: true }}
+          form={form}
+          labelCol={{ span: 5 }}
+          wrapperCol={{ span: 19 }}
+          style={{ maxWidth: 1000 }}
           autoComplete="off"
         >
           <Form.Item<FieldType>
-            label="Username"
-            name="username"
-            rules={[{ required: true, message: 'Please input your username!' }]}
+            label="开始时间"
+            name="start_time"
           >
-            <Input />
+             <TimePicker />
           </Form.Item>
 
           <Form.Item<FieldType>
-            label="Password"
-            name="password"
-            rules={[{ required: true, message: 'Please input your password!' }]}
+            label="结束时间"
+            name="end_time"
           >
-            <Input.Password />
+            <TimePicker />
           </Form.Item>
 
           <Form.Item<FieldType>
-            name="remember"
-            valuePropName="checked"
-            wrapperCol={{ offset: 8, span: 16 }}
+            label="间隔时间"
+            name="interval_time"
           >
-            <Checkbox>Remember me</Checkbox>
+            <InputNumber/> 分钟
           </Form.Item>
-
-          <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-            <Button type="primary" htmlType="submit">
-              Submit
-            </Button>
-          </Form.Item>
-        </Form>
+        </Form> */}
+         <Form
+        form={form}
+        layout="vertical"
+        name="form_in_modal"
+        initialValues={{ modifier: 'public' }}
+      >
+        <Form.Item
+          name="title"
+          label="Title"
+          rules={[{ required: true, message: 'Please input the title of collection!' }]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item name="description" label="Description">
+          <Input type="textarea" />
+        </Form.Item>
+        <Form.Item name="modifier" className="collection-create-form_last-form-item">
+          <Radio.Group>
+            <Radio value="public">Public</Radio>
+            <Radio value="private">Private</Radio>
+          </Radio.Group>
+        </Form.Item>
+      </Form>
       </Modal>
     </>
   )
