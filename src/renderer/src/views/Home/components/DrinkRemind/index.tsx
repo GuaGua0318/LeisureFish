@@ -1,6 +1,6 @@
-import { Card, Form, InputNumber, Modal, Statistic, TimePicker, message } from 'antd'
+import { Button, Card, Form, InputNumber, Modal, Statistic, TimePicker, message } from 'antd'
 import type { CountdownProps } from 'antd'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import dayjs from 'dayjs'
 const { Countdown } = Statistic
 
@@ -9,16 +9,22 @@ type FieldType = {
   interval_time?: number
 }
 
-const deadline = Date.now() + 1000 * 60
-
 const DrinkRemind = () => {
   const [settingOpen, setIsSettingOpen] = useState<boolean>(false)
   const [form] = Form.useForm()
   const [messageApi, contextHolder] = message.useMessage()
+  const [deadline, setDealine] = useState<number>(0)
+  const [refresh, setRefresh] = useState<number>(0)
 
   const handleSettingCancel = () => {
     setIsSettingOpen(false)
   }
+
+  useEffect(() => {
+    setDealine(
+      Date.now() + 1000 * 60 * JSON.parse(window.localStorage.getItem('drinkTime')).interval_time
+    )
+  }, [refresh])
   return (
     <>
       {contextHolder}
@@ -37,10 +43,17 @@ const DrinkRemind = () => {
         style={{ width: 300 }}
       >
         <p>距离下一次喝水提醒还有</p>
-        <Countdown title="Day Level" value={deadline} format="D 天 H 时 m 分 s 秒" />
+        <Countdown value={deadline} format="D 天 H 时 m 分 s 秒" />
+        <Button
+          type="primary"
+          onClick={() => {
+            setRefresh(refresh + 1)
+          }}
+        >
+          确定
+        </Button>
       </Card>
       <Modal
-        title=" "
         open={settingOpen}
         onCancel={handleSettingCancel}
         cancelText="取消"
@@ -60,6 +73,8 @@ const DrinkRemind = () => {
                 type: 'success',
                 content: '设置成功'
               })
+              setRefresh(refresh + 1)
+              setIsSettingOpen(false)
 
               // 关闭 Modal
             })
