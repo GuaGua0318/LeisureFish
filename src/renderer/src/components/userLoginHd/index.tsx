@@ -1,7 +1,8 @@
 import { Avatar, Col, Dropdown, MenuProps, Row, Space } from 'antd'
 import React, { useState } from 'react'
 import styles from './userLoginHd.module.scss'
-import { DownOutlined, SmileOutlined, UserOutlined } from '@ant-design/icons'
+import { DownOutlined, LeftOutlined, SmileOutlined, UserOutlined } from '@ant-design/icons'
+import { useNavigate } from 'react-router'
 
 type Props = {}
 const items: MenuProps['items'] = [
@@ -19,10 +20,18 @@ const items: MenuProps['items'] = [
 
 const UserLoginHd = () => {
   const [isLogin, setIslogin] = useState<boolean>(false) //模拟登录状态
+  const navigate = useNavigate()
   return (
     <>
       <Row className={styles.userLoginHd}>
-        <Col span={24} style={{ textAlign: 'right', paddingRight: '10px',lineHeight:'40px' }}>
+        <Col span={4} style={{ lineHeight: '40px' }}>
+          <LeftOutlined
+            onClick={() => {
+              navigate(-1)
+            }}
+          />
+        </Col>
+        <Col span={20} style={{ textAlign: 'right', paddingRight: '10px', lineHeight: '40px' }}>
           {isLogin ? (
             <Space direction="vertical" size={16}>
               <Space wrap size={16}>
