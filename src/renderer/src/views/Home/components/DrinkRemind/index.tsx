@@ -21,9 +21,12 @@ const DrinkRemind = () => {
   }
 
   useEffect(() => {
-    setDealine(
-      Date.now() + 1000 * 60 * JSON.parse(window.localStorage.getItem('drinkTime')).interval_time
-    )
+    if(window.localStorage.getItem('drinkTime')){
+      setDealine(
+        Date.now() + 1000 * 60 * JSON.parse(window.localStorage.getItem('drinkTime')).interval_time
+      )
+    }
+    
   }, [refresh])
   return (
     <>
