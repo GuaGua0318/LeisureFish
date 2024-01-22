@@ -1,5 +1,5 @@
-import React, { useRef } from 'react'
-import { Card, Col, Row, ColorPicker, Space } from 'antd'
+import React, { useRef, useState } from 'react'
+import { Card, Col, Row, ColorPicker, Space, Modal, Checkbox } from 'antd'
 import UserLoginHd from '@renderer/components/userLoginHd'
 import DrinkRemind from './components/DrinkRemind'
 import styles from './home.module.scss'
@@ -31,10 +31,25 @@ const defaultStyle = {
   fontColor: '#d64737',
   fontSize: '14px'
 }
+const plainOptions = ['Apple', 'Pear', 'Orange'];
+
+const options = [
+  { label: 'Apple', value: 'Apple' },
+  { label: 'Pear', value: 'Pear' },
+  { label: 'Orange', value: 'Orange' },
+];
+
+const optionsWithDisabled = [
+  { label: 'Apple', value: 'Apple' },
+  { label: 'Pear', value: 'Pear' },
+  { label: 'Orange', value: 'Orange', disabled: false },
+];
+const imgg = 'https://img0.baidu.com/it/u=146494919,1943694376&fm=253&fmt=auto&app=138&f=JPEG?w=889&h=500'
 
 const Home = () => {
   const navigate = useNavigate()
   const myLuckey = useRef(null)
+  const [eatSetting, setEatSetting] = useState<boolean>(false)
 
   return (
     <>
@@ -55,7 +70,16 @@ const Home = () => {
           </Card>
         </Col>
         <Col span={8}>
-          <Card title="Card title" bordered={false}>
+          <Card title="吃什么" bordered={false} extra={
+            <a
+              href="#"
+              onClick={() => {
+                setEatSetting(true)
+              }}
+            >
+              设置
+            </a>
+          }>
             <LuckyWheel width="300px" height="300px" ref={myLuckey} blocks={blocks}
               prizes={prizes}
               buttons={buttons}
@@ -64,7 +88,7 @@ const Home = () => {
                 // 调用抽奖组件的play方法开始游戏
                 myLuckey.current.play()
               }}
-              ></LuckyWheel>
+            ></LuckyWheel>
           </Card>
         </Col>
         <Col span={8}>
@@ -107,6 +131,21 @@ const Home = () => {
           </Card>
         </Col>
       </Row>
+      <Modal title="设置" open={eatSetting} onCancel={() => {
+        setEatSetting(false)
+      }}>
+        <Checkbox.Group options={plainOptions} defaultValue={['Apple']}/>
+        <br />
+        <br />
+        <Checkbox.Group options={options} defaultValue={['Pear']}/>
+        <br />
+        <br />
+        <Checkbox.Group 
+          options={optionsWithDisabled}
+          disabled
+          defaultValue={['Apple']}
+        />
+      </Modal>
     </>
   )
 }
