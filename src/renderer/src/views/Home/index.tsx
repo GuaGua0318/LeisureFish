@@ -7,6 +7,16 @@ import { useNavigate } from 'react-router'
 import { ArrowRightOutlined } from '@ant-design/icons'
 import { LuckyWheel, LuckyGrid } from 'react-luck-draw'
 
+const imgg = 'https://img0.baidu.com/it/u=146494919,1943694376&fm=253&fmt=auto&app=138&f=JPEG?w=5&h=5'
+
+const test = () => {
+  return(
+    <div>
+      sdfsdfd
+    </div>
+  )
+}
+
 const blocks = [
   { padding: '13px', background: '#d64737' }
 ]
@@ -31,25 +41,19 @@ const defaultStyle = {
   fontColor: '#d64737',
   fontSize: '14px'
 }
-const plainOptions = ['Apple', 'Pear', 'Orange'];
 
 const options = [
-  { label: 'Apple', value: 'Apple' },
-  { label: 'Pear', value: 'Pear' },
-  { label: 'Orange', value: 'Orange' },
+  { label: <img style={{width:'100px',height:'100px'}} src={imgg}/>, value: 'Apple' },
+  { label: <img style={{width:'100px',height:'100px'}} src={imgg}/>, value: 'Pear' },
+  { label: <img style={{width:'100px',height:'100px'}} src={imgg}/>, value: 'Orange' },
 ];
 
-const optionsWithDisabled = [
-  { label: 'Apple', value: 'Apple' },
-  { label: 'Pear', value: 'Pear' },
-  { label: 'Orange', value: 'Orange', disabled: false },
-];
-const imgg = 'https://img0.baidu.com/it/u=146494919,1943694376&fm=253&fmt=auto&app=138&f=JPEG?w=889&h=500'
 
 const Home = () => {
   const navigate = useNavigate()
   const myLuckey = useRef(null)
   const [eatSetting, setEatSetting] = useState<boolean>(false)
+  const [selectCheckbox,setSelectCheckbox] = useState([1,2])
 
   return (
     <>
@@ -81,7 +85,13 @@ const Home = () => {
             </a>
           }>
             <LuckyWheel width="300px" height="300px" ref={myLuckey} blocks={blocks}
-              prizes={prizes}
+              prizes={selectCheckbox && selectCheckbox.map((item) => {
+                return  { title: '1元红包', background: '#f9e3bb', fonts: [{ text: '1元红包', top: '18%' }],imgs:[{
+                  src: 'https://img0.baidu.com/it/u=146494919,1943694376&fm=253&fmt=auto&app=138&f=JPEG?w=5&h=5',
+                  width: '40%',
+                  top: '10%'
+                }] }
+              })}
               buttons={buttons}
               defaultStyle={defaultStyle}
               onStart={() => { // 点击抽奖按钮会触发star回调
@@ -93,7 +103,6 @@ const Home = () => {
         </Col>
         <Col span={8}>
           <Card title="Card title" bordered={false}>
-            Card content
           </Card>
         </Col>
       </Row>
@@ -134,17 +143,9 @@ const Home = () => {
       <Modal title="设置" open={eatSetting} onCancel={() => {
         setEatSetting(false)
       }}>
-        <Checkbox.Group options={plainOptions} defaultValue={['Apple']}/>
-        <br />
-        <br />
-        <Checkbox.Group options={options} defaultValue={['Pear']}/>
-        <br />
-        <br />
-        <Checkbox.Group 
-          options={optionsWithDisabled}
-          disabled
-          defaultValue={['Apple']}
-        />
+        <Checkbox.Group options={options} onChange={(e) => {
+          setSelectCheckbox(e)
+        }}/>
       </Modal>
     </>
   )
