@@ -24,6 +24,7 @@
     "@electron-toolkit/preload": "^2.0.0",
     "@electron-toolkit/utils": "^2.0.0",
     "antd": "^5.12.5",
+    "color-thief-react": "^2.1.0",
     "dayjs": "^1.11.10",
     "electron-updater": "^6.1.1",
     "react-luck-draw": "^1.0.1",

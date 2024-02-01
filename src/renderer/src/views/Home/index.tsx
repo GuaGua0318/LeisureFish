@@ -62,7 +62,7 @@ const Home = () => {
       <DrinkRemind />
       
       <Row gutter={16}>
-        <Col span={6}>
+        <Col span={8}>
           <Card title="取色器" bordered={false}>
             <Space size={100}>
               <ColorPicker size="small" showText />
@@ -104,7 +104,7 @@ const Home = () => {
             ></LuckyWheel>
           </Card>
         </Col>
-        <Col span={8}>
+        <Col span={6}>
           <Card title="Card title" bordered={false}>
           </Card>
         </Col>
