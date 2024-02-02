@@ -1,0 +1,22 @@
+.fileinputButton {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  display: block;
+  width: 400px;
+  height: 200px;
+  border: 1px solid #c5c5c5;
+  line-height: 30px;
+  font-size: 14px;
+  margin: 0 auto;
+  background-color: #fff;
+}
+.fileinputButton input {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  opacity: 0;
+  width: 400px;
+  height: 200px;
+  -ms-filter: 'alpha(opacity=0)';
+}
