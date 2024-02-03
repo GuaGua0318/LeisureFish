@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import styles from './imgUpload.module.scss'
 import { PlusOutlined } from '@ant-design/icons'
+import { Col, Row } from 'antd'
 
 const ImgUpload = () => {
   const [imgUrl, setImgUrl] = useState()
+  const [color, setColor] = useState<string>()
   const eyeDropper = new EyeDropper()
 
   const getBase64 = (e) => {
@@ -17,7 +19,13 @@ const ImgUpload = () => {
         <span className={styles.fileinputButton}>
           <span>
             <PlusOutlined
-              style={{ fontSize: '60px', position: 'absolute', left: '50%', top: '50%',transform:'translate(-50%,-50%)' }}
+              style={{
+                fontSize: '60px',
+                position: 'absolute',
+                left: '50%',
+                top: '50%',
+                transform: 'translate(-50%,-50%)'
+              }}
             />
           </span>
           <input
@@ -28,21 +36,32 @@ const ImgUpload = () => {
           />
         </span>
       )}
-      <div>{imgUrl?.length > 0 ? <img src={imgUrl} /> : null}</div>
-      <div
-        onClick={() => {
-          eyeDropper
-            .open()
-            .then((result) => {
-              console.log(result)
-            })
-            .catch((e) => {
-              console.log(e)
-            })
-        }}
-      >
-        test
+      <div style={{ maxWidth: '90%', margin: '0 auto' }}>
+        {imgUrl?.length > 0 ? (
+          <img
+            style={{ width: '100%', height: '100%' }}
+            src={imgUrl}
+            onClick={() => {
+              eyeDropper
+                .open()
+                .then((result) => {
+                  setColor(result.sRGBHex)
+                })
+                .catch((e) => {
+                  console.log(e)
+                })
+            }}
+          />
+        ) : null}
       </div>
+      <Row>
+        <Col span={6} style={{ height: '70px', background: `${color}`,fontSize:'22px',textAlign:'center',lineHeight:'70px' }}>
+          {color}
+        </Col>
+        <Col span={6} style={{ height: '70px', background: 'pink' }}></Col>
+        <Col span={6} style={{ height: '70px', background: 'greeb' }}></Col>
+        <Col span={6} style={{ height: '70px', background: 'yellow' }}></Col>
+      </Row>
     </>
   )
 }
