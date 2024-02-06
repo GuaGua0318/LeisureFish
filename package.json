@@ -26,6 +26,7 @@
     "antd": "^5.12.5",
     "color-thief-react": "^2.1.0",
     "dayjs": "^1.11.10",
+    "electron-screenshots": "^0.5.26",
     "electron-updater": "^6.1.1",
     "react-luck-draw": "^1.0.1",
     "react-router": "^6.21.1",

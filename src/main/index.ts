@@ -2,6 +2,7 @@ import { app, shell, BrowserWindow } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import Screenshots from 'electron-screenshots'
 
 function createWindow(): void {
   // Create the browser window.
@@ -41,7 +42,34 @@ function createWindow(): void {
 app.whenReady().then(() => {
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')
-
+  const screenshots = new Screenshots()
+  globalShortcut.register('ctrl+shift+a', () => {
+    screenshots.startCapture()
+    screenshots.$view.webContents.openDevTools()
+  })
+  // 点击确定按钮回调事件
+  screenshots.on('ok', (e, buffer, bounds) => {
+    console.log('capture', buffer, bounds)
+  })
+  // 点击取消按钮回调事件
+  screenshots.on('cancel', () => {
+    console.log('capture', 'cancel1')
+  })
+  screenshots.on('cancel', (e) => {
+    // 执行了preventDefault
+    // 点击取消不会关闭截图窗口
+    e.preventDefault()
+    console.log('capture', 'cancel2')
+  })
+  // 点击保存按钮回调事件
+  screenshots.on('save', (e, buffer, bounds) => {
+    console.log('capture', buffer, bounds)
+  })
+  // 保存后的回调事件
+  screenshots.on('afterSave', (e, buffer, bounds, isSaved) => {
+    console.log('capture', buffer, bounds)
+    console.log('isSaved', isSaved) // 是否保存成功
+  })
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.
   // see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
@@ -69,3 +97,8 @@ app.on('window-all-closed', () => {
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
+    app.quit()
+  }
+})
