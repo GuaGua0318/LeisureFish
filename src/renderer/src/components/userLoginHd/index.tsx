@@ -47,7 +47,13 @@ const UserLoginHd = () => {
               </Space>
             </Space>
           ) : (
-            <a href="javascript(0)">立刻登录</a>
+            <a
+              onClick={() => {
+                navigate('/login')
+              }}
+            >
+              立刻登录
+            </a>
           )}
         </Col>
       </Row>

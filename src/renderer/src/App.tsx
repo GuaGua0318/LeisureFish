@@ -1,8 +1,8 @@
-import Router from "./routes/route"
+import Router from './routes/route'
 function App(): JSX.Element {
   return (
     <div className="container">
-      <Router/>
+      <Router />
     </div>
   )
 }
