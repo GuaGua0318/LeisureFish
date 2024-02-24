@@ -1,7 +1,8 @@
 import { Button, Form, Input, message } from 'antd'
 import styles from './login.module.scss'
-import { login } from './service'
+import { login, register } from './service'
 import { useNavigate } from 'react-router'
+import { useState } from 'react'
 
 type Props = {}
 
@@ -13,14 +14,24 @@ type FieldType = {
 
 const Login = (props: Props) => {
   const navigate = useNavigate()
+  const [loginOrRegister, setLoginOrRegister] = useState<string>('login')
   //登录
   const onLoginFinish = async (values: any) => {
-    const result = await login(values)
-    console.log(result)
-    if (result.data.code === 200) {
-      message.success('登录成功')
-      window.localStorage.setItem('token', result.data.data.token)
-      navigate('/')
+    if (loginOrRegister === 'login') {
+      const result = await login(values)
+      console.log(result)
+      if (result.code === 200) {
+        message.success('登录成功')
+        window.localStorage.setItem('token', result.data.token)
+        navigate('/')
+      }
+    } else {
+      const result = await register(values)
+      console.log(result)
+      if (result.code === 200) {
+        message.success('注册成功')
+        setLoginOrRegister('login')
+      }
     }
   }
   return (
@@ -53,8 +64,21 @@ const Login = (props: Props) => {
 
         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
           <Button type="primary" htmlType="submit">
-            登录
+            {loginOrRegister === 'login' ? '登录' : '注册'}
           </Button>
+          <a
+            style={{ marginLeft: '5px' }}
+            onClick={() => {
+              if (loginOrRegister === 'login') {
+                setLoginOrRegister('register')
+              } else {
+                setLoginOrRegister('login')
+              }
+            }}
+          >
+            {' '}
+            {loginOrRegister === 'login' ? '没有账号，先注册' : '已有账号，直接登录'}
+          </a>
         </Form.Item>
       </Form>
     </div>

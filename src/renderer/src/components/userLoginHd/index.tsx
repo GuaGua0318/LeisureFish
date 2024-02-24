@@ -5,21 +5,29 @@ import { DownOutlined, LeftOutlined, SmileOutlined, UserOutlined } from '@ant-de
 import { useNavigate } from 'react-router'
 
 type Props = {}
-const items: MenuProps['items'] = [
-  {
-    key: '1',
-    label: (
-      <>
-        <div>个人资料</div>
-        <div>修改密码</div>
-        <div>退出</div>
-      </>
-    )
-  }
-]
 
 const UserLoginHd = () => {
   const [isLogin, setIslogin] = useState<boolean>(false) //模拟登录状态
+
+  const items: MenuProps['items'] = [
+    {
+      key: '1',
+      label: (
+        <>
+          <div>个人资料</div>
+          <div>修改密码</div>
+          <div
+            onClick={() => {
+              window.localStorage.removeItem('token')
+              setIslogin(false)
+            }}
+          >
+            退出
+          </div>
+        </>
+      )
+    }
+  ]
   useEffect(() => {
     if (window.localStorage.getItem('token')) {
       setIslogin(true)
