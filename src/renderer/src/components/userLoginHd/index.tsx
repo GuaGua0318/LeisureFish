@@ -1,5 +1,5 @@
 import { Avatar, Col, Dropdown, MenuProps, Row, Space } from 'antd'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './userLoginHd.module.scss'
 import { DownOutlined, LeftOutlined, SmileOutlined, UserOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router'
@@ -20,6 +20,11 @@ const items: MenuProps['items'] = [
 
 const UserLoginHd = () => {
   const [isLogin, setIslogin] = useState<boolean>(false) //模拟登录状态
+  useEffect(() => {
+    if (window.localStorage.getItem('token')) {
+      setIslogin(true)
+    }
+  }, [])
   const navigate = useNavigate()
   return (
     <>

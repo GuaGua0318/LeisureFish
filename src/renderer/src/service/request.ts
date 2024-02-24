@@ -47,8 +47,7 @@ const request = extend({
   headers: {
     // headers中搭载token等请求头信息
     'Content-Type': 'application/json;charset=utf-8',
-    // Authorization: window.localStorage.getItem('token') || ''
-    // Authorization: 'eyJhbGciOiJIUzUxMiJ9.eyJsb2dpbl91c2VyX2tleSI6IjEzYWRjY2MzLTY0ZDYtNDJkZC1hY2MwLTRhMTZiYjExNzgzOSJ9.3G_s6DH2gaZGCvPtQ35OkFG3A6q3vCTWl2BbVRk0lZUjeNmHKORzU17esu8gufTVfP3ecMSc3PtUMRL9tv3xuA'
+    Authorization: window.localStorage.getItem('token') || ''
   },
   //处理请求错误 调用上面的错误处理逻辑
   errorHandler: errorHandler
@@ -57,7 +56,7 @@ const request = extend({
 // 对实例request进行请求拦截
 // 可以在里面对url、option中的参数进行进一步处理
 request.interceptors.request.use((url, options) => {
-
+  
 })
 
 // 对实例request进行响应拦截, 统一处理接口错误信息

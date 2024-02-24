@@ -1,6 +1,7 @@
-import { Button, Form, Input } from 'antd'
+import { Button, Form, Input, message } from 'antd'
 import styles from './login.module.scss'
 import { login } from './service'
+import { useNavigate } from 'react-router'
 
 type Props = {}
 
@@ -11,10 +12,16 @@ type FieldType = {
 }
 
 const Login = (props: Props) => {
+  const navigate = useNavigate()
   //登录
   const onLoginFinish = async (values: any) => {
     const result = await login(values)
     console.log(result)
+    if (result.data.code === 200) {
+      message.success('登录成功')
+      window.localStorage.setItem('token', result.data.data.token)
+      navigate('/')
+    }
   }
   return (
     <div className={styles.loginBox}>
