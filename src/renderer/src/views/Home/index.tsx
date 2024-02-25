@@ -114,41 +114,13 @@ const Home = () => {
           </Card>
         </Col>
         <Col span={6}>
-          <Card title="Card title" bordered={false}></Card>
-        </Col>
-      </Row>
-      <Row gutter={16}>
-        <Col span={8}>
-          <Card title="Card title" bordered={false}>
-            Card content
-          </Card>
-        </Col>
-        <Col span={8}>
-          <Card title="Card title" bordered={false}>
-            Card content
-          </Card>
-        </Col>
-        <Col span={8}>
-          <Card title="Card title" bordered={false}>
-            Card content
-          </Card>
-        </Col>
-      </Row>
-      <Row gutter={16}>
-        <Col span={8}>
-          <Card title="Card title" bordered={false}>
-            Card content
-          </Card>
-        </Col>
-        <Col span={8}>
-          <Card title="Card title" bordered={false}>
-            Card content
-          </Card>
-        </Col>
-        <Col span={8}>
-          <Card title="Card title" bordered={false}>
-            Card content
-          </Card>
+          <Card
+            title="社区"
+            bordered={false}
+            onClick={() => {
+              navigate('/community')
+            }}
+          ></Card>
         </Col>
       </Row>
       <Modal
