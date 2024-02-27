@@ -1,13 +1,26 @@
 import UserLoginHd from '@renderer/components/userLoginHd'
-import React from 'react'
+import React, { useEffect } from 'react'
 import styles from './community.module.scss'
 import { Col, Row } from 'antd'
 import { useNavigate } from 'react-router'
+import { getArticles } from './service'
 
 type Props = {}
 
 const Community = (props: Props) => {
   const navigate = useNavigate()
+
+  //获取数据列表
+  const fetchArticles = async () => {
+    const result = await getArticles()
+    if (result.code === 200) {
+      console.log(result)
+    }
+  }
+  useEffect(() => {
+    fetchArticles()
+  }, [])
+
   return (
     <>
       <UserLoginHd />

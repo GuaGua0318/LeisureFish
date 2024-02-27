@@ -23,6 +23,7 @@ const Login = (props: Props) => {
       if (result.code === 200) {
         message.success('登录成功')
         window.localStorage.setItem('token', result.data.token)
+        window.localStorage.setItem('username', values.username)
         navigate('/')
       }
     } else {

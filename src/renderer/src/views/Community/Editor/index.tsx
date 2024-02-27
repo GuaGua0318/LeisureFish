@@ -1,14 +1,32 @@
-import { Button, Input } from 'antd'
+import { Button, Input, message } from 'antd'
 import React, { useState } from 'react'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
+import { write } from '../service'
+import UserLoginHd from '@renderer/components/userLoginHd'
+import { useNavigate } from 'react-router'
 
 const Editor = (props: Props) => {
+  const navigate = useNavigate
   const [value, setValue] = useState('')
   const [title, setTitle] = useState('')
 
+  //发布帖子
+  const release = async () => {
+    const result = await write({
+      username: localStorage.getItem('username'),
+      title: title,
+      content: value
+    })
+    if (result.code == 200) {
+      message.success('发布成功')
+      navigate('/')
+    }
+  }
+
   return (
     <>
+      <UserLoginHd />
       <Input
         placeholder="请输入标题"
         value={title}
@@ -25,7 +43,7 @@ const Editor = (props: Props) => {
       />
       <Button
         onClick={() => {
-          console.log(value, title)
+          release()
         }}
       >
         发布
