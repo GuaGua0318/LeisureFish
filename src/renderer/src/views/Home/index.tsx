@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Card, Col, Row, ColorPicker, Space, Modal, Checkbox, Avatar, Badge } from 'antd'
 import UserLoginHd from '@renderer/components/userLoginHd'
 import DrinkRemind from './components/DrinkRemind'
@@ -9,6 +9,12 @@ import { LuckyWheel, LuckyGrid } from 'react-luck-draw'
 import { io } from 'socket.io-client'
 import 'wc-waterfall'
 
+const socket = io('http://localhost:3001')
+socket.on('connect', () => {
+  socket.emit('findAllChat', (res) => {
+    console.log(res)
+  })
+})
 
 const imgg =
   'https://img0.baidu.com/it/u=146494919,1943694376&fm=253&fmt=auto&app=138&f=JPEG?w=5&h=5'
@@ -44,16 +50,21 @@ const options = [
 ]
 
 const Home = () => {
-  const socket = io('http://localhost:3001')
   const navigate = useNavigate()
   const myLuckey = useRef(null)
   const [eatSetting, setEatSetting] = useState<boolean>(false)
   const [selectCheckbox, setSelectCheckbox] = useState([1, 2, 3, 4, 5, 6, 7, 8])
+  const [userList, setUserList] = useState([])
 
-  socket.on('connect', (arg) => {
-    console.log(socket.id)
-    console.log(arg)
-  })
+  useEffect(() => {
+    socket.emit('isOnline', (res) => {
+      console.log(res)
+      if (res.code === 200) {
+        setUserList(res.data)
+      }
+      // setUserList(res)
+    })
+  }, [])
 
   return (
     <>
@@ -123,28 +134,23 @@ const Home = () => {
         </Col>
         <Col span={6}>
           <Card title="用户" bordered={false}>
-            <Row>
-              <Col span={6}>
-                <Avatar size="large" icon={<UserOutlined />} />
-              </Col>
-              <Col span={18}>
-                <div>游仙</div>
-                <div>
-                  <Badge key="green" color="green" text="在线" />
-                </div>
-              </Col>
-            </Row>
-            <Row>
-              <Col span={6}>
-                <Avatar size="large" icon={<UserOutlined />} />
-              </Col>
-              <Col span={18}>
-                <div>游仙</div>
-                <div>
-                  <Badge key="red" color="red" text="离线" />
-                </div>
-              </Col>
-            </Row>
+            {userList.length > 0
+              ? userList.map((item, idnex) => {
+                  return (
+                    <Row key={item.id}>
+                      <Col span={6}>
+                        <Avatar size="large" icon={<UserOutlined />} />
+                      </Col>
+                      <Col span={18}>
+                        <div>{item.username}</div>
+                        <div>
+                          <Badge key="green" color="green" text={item.isOnline ? '在线' : '离线'} />
+                        </div>
+                      </Col>
+                    </Row>
+                  )
+                })
+              : null}
           </Card>
         </Col>
       </Row>
