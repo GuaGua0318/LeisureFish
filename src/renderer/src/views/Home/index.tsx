@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Card, Col, Row, ColorPicker, Space, Modal, Checkbox, Avatar, Badge } from 'antd'
+import { Card, Col, Row, ColorPicker, Space, Modal, Checkbox, Avatar, Badge, List, Input, Button } from 'antd'
 import UserLoginHd from '@renderer/components/userLoginHd'
 import DrinkRemind from './components/DrinkRemind'
 import styles from './home.module.scss'
@@ -8,6 +8,21 @@ import { ArrowRightOutlined, UserOutlined } from '@ant-design/icons'
 import { LuckyWheel, LuckyGrid } from 'react-luck-draw'
 import { io } from 'socket.io-client'
 import 'wc-waterfall'
+
+const data = [
+  {
+    title: 'Ant Design Title 1'
+  },
+  {
+    title: 'Ant Design Title 2'
+  },
+  {
+    title: 'Ant Design Title 3'
+  },
+  {
+    title: 'Ant Design Title 4'
+  }
+]
 
 const socket = io('http://localhost:3001')
 socket.on('connect', () => {
@@ -55,6 +70,11 @@ const Home = () => {
   const [eatSetting, setEatSetting] = useState<boolean>(false)
   const [selectCheckbox, setSelectCheckbox] = useState([1, 2, 3, 4, 5, 6, 7, 8])
   const [userList, setUserList] = useState([])
+  const [isModalOpenChat, setIsModalOpenChat] = useState(true)
+
+  const handleCancelChat = () => {
+    setIsModalOpenChat(false)
+  }
 
   useEffect(() => {
     socket.emit('isOnline', (res) => {
@@ -178,6 +198,22 @@ const Home = () => {
             setSelectCheckbox(e)
           }}
         />
+      </Modal>
+      <Modal title="Basic Modal" open={isModalOpenChat} onCancel={handleCancelChat}>
+        <List
+          itemLayout="horizontal"
+          dataSource={data}
+          renderItem={(item, index) => (
+            <List.Item>
+              <List.Item.Meta
+                avatar={<Avatar src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`} />}
+                title={<a href="https://ant.design">{item.title}</a>}
+                description="Ant Design, a design language for background applications, is refined by Ant UED Team"
+              />
+            </List.Item>
+          )}
+        />
+        <Input /><Button>发送</Button>
       </Modal>
     </>
   )
