@@ -1,5 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Card, Col, Row, ColorPicker, Space, Modal, Checkbox, Avatar, Badge, List, Input, Button } from 'antd'
+import {
+  Card,
+  Col,
+  Row,
+  ColorPicker,
+  Space,
+  Modal,
+  Checkbox,
+  Avatar,
+  Badge,
+  List,
+  Input,
+  Button
+} from 'antd'
 import UserLoginHd from '@renderer/components/userLoginHd'
 import DrinkRemind from './components/DrinkRemind'
 import styles from './home.module.scss'
@@ -71,9 +84,27 @@ const Home = () => {
   const [selectCheckbox, setSelectCheckbox] = useState([1, 2, 3, 4, 5, 6, 7, 8])
   const [userList, setUserList] = useState([])
   const [isModalOpenChat, setIsModalOpenChat] = useState(true)
+  const [resolveInfo, setResolveInfo] = useState({})
+  const [message, setMessage] = useState('')
 
   const handleCancelChat = () => {
     setIsModalOpenChat(false)
+  }
+
+  //发送消息
+  const sendMessage = async () => {
+    const value = {
+      sendUser: window.localStorage.getItem('username'),
+      receiveUser: resolveInfo.username,
+      message: message
+    }
+    try {
+      socket.emit('sendMessage', value, (res) => {
+        console.log('----res', res)
+      })
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   useEffect(() => {
@@ -157,7 +188,13 @@ const Home = () => {
             {userList.length > 0
               ? userList.map((item, idnex) => {
                   return (
-                    <Row key={item.id}>
+                    <Row
+                      key={item.id}
+                      onClick={() => {
+                        setResolveInfo(item)
+                        setIsModalOpenChat(true)
+                      }}
+                    >
                       <Col span={6}>
                         <Avatar size="large" icon={<UserOutlined />} />
                       </Col>
@@ -199,21 +236,35 @@ const Home = () => {
           }}
         />
       </Modal>
-      <Modal title="Basic Modal" open={isModalOpenChat} onCancel={handleCancelChat}>
+      <Modal title={resolveInfo.username} open={isModalOpenChat} onCancel={handleCancelChat}>
         <List
           itemLayout="horizontal"
           dataSource={data}
           renderItem={(item, index) => (
-            <List.Item>
-              <List.Item.Meta
-                avatar={<Avatar src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`} />}
-                title={<a href="https://ant.design">{item.title}</a>}
-                description="Ant Design, a design language for background applications, is refined by Ant UED Team"
-              />
-            </List.Item>
+            <Row>
+              <Col span={3}>
+                <Avatar size="large" icon={<UserOutlined />} style={{ marginTop: '20px' }} />
+              </Col>
+              <Col span={21}>
+                <p>username</p>
+                <p>message</p>
+              </Col>
+            </Row>
           )}
         />
-        <Input /><Button>发送</Button>
+        <Input
+          value={message}
+          onChange={(val) => {
+            setMessage(val.target.value)
+          }}
+        />
+        <Button
+          onClick={() => {
+            sendMessage()
+          }}
+        >
+          发送
+        </Button>
       </Modal>
     </>
   )
