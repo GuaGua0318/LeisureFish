@@ -91,6 +91,21 @@ const Home = () => {
     setIsModalOpenChat(false)
   }
 
+  //获取消息
+  const getMessage = async () => {
+    const value = {
+      sendUser: window.localStorage.getItem('username'),
+      receiveUser: resolveInfo.username,
+    }
+    try {
+      socket.emit('getMessage', value, (res) => {
+        console.log('------dududu', res)
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   //发送消息
   const sendMessage = async () => {
     const value = {
@@ -101,6 +116,9 @@ const Home = () => {
     try {
       socket.emit('sendMessage', value, (res) => {
         console.log('----res', res)
+        if (res.code == 200) {
+          getMessage()
+        }
       })
     } catch (error) {
       console.log(error)
@@ -120,7 +138,7 @@ const Home = () => {
   return (
     <>
       <UserLoginHd />
-      {/* <DrinkRemind /> */}
+      <DrinkRemind />
 
       <Row gutter={16}>
         <Col span={8}>
