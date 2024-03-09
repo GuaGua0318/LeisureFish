@@ -21,6 +21,7 @@ import { ArrowRightOutlined, UserOutlined } from '@ant-design/icons'
 import { LuckyWheel, LuckyGrid } from 'react-luck-draw'
 import { io } from 'socket.io-client'
 import 'wc-waterfall'
+import foodImg from '../../assets/eat.webp'
 
 const data = [
   {
@@ -44,17 +45,26 @@ socket.on('connect', () => {
   })
 })
 
-const imgg =
-  'https://img0.baidu.com/it/u=146494919,1943694376&fm=253&fmt=auto&app=138&f=JPEG?w=5&h=5'
-
 const blocks = [{ padding: '13px', background: '#d64737' }]
 const prizes = [
-  { title: '1元红包', background: '#f9e3bb', fonts: [{ text: '1元红包', top: '18%' }] },
-  { title: '100元红包', background: '#f8d384', fonts: [{ text: '100元红包', top: '18%' }] },
-  { title: '0.5元红包', background: '#f9e3bb', fonts: [{ text: '0.5元红包', top: '18%' }] },
-  { title: '2元红包', background: '#f8d384', fonts: [{ text: '2元红包', top: '18%' }] },
-  { title: '10元红包', background: '#f9e3bb', fonts: [{ text: '10元红包', top: '18%' }] },
-  { title: '50元红包', background: '#f8d384', fonts: [{ text: '50元红包', top: '18%' }] }
+  {
+    // title: '1元红包',
+    background: '#f9e3bb',
+    // fonts: [{ text: '1元红包', top: '18%' }],
+    imgs: [
+      {
+        src: { foodImg },
+        width: '40%',
+        height: '50%',
+        top: '10%'
+      }
+    ]
+  }
+  // { title: '100元红包', background: '#f8d384', fonts: [{ text: '100元红包', top: '18%' }] },
+  // { title: '0.5元红包', background: '#f9e3bb', fonts: [{ text: '0.5元红包', top: '18%' }] },
+  // { title: '2元红包', background: '#f8d384', fonts: [{ text: '2元红包', top: '18%' }] },
+  // { title: '10元红包', background: '#f9e3bb', fonts: [{ text: '10元红包', top: '18%' }] },
+  // { title: '50元红包', background: '#f8d384', fonts: [{ text: '50元红包', top: '18%' }] }
 ]
 const buttons = [
   { radius: '50px', background: '#d64737' },
@@ -72,9 +82,9 @@ const defaultStyle = {
 }
 
 const options = [
-  { label: <img style={{ width: '100px', height: '100px' }} src={imgg} />, value: 'Apple' },
-  { label: <img style={{ width: '100px', height: '100px' }} src={imgg} />, value: 'Pear' },
-  { label: <img style={{ width: '100px', height: '100px' }} src={imgg} />, value: 'Orange' }
+  { label: <img style={{ width: '100px', height: '100px' }} src={foodImg} />, value: 'Apple' },
+  { label: <img style={{ width: '100px', height: '100px' }} src={foodImg} />, value: 'Pear' },
+  { label: <img style={{ width: '100px', height: '100px' }} src={foodImg} />, value: 'Orange' }
 ]
 
 const Home = () => {
@@ -86,6 +96,8 @@ const Home = () => {
   const [isModalOpenChat, setIsModalOpenChat] = useState(true)
   const [resolveInfo, setResolveInfo] = useState({})
   const [message, setMessage] = useState('')
+  const [isEatOpen, setIsEatOpen] = useState(false)
+  const [selectedEat, setSelectedEat] = useState('')
 
   const handleCancelChat = () => {
     setIsModalOpenChat(false)
@@ -95,7 +107,7 @@ const Home = () => {
   const getMessage = async () => {
     const value = {
       sendUser: window.localStorage.getItem('username'),
-      receiveUser: resolveInfo.username,
+      receiveUser: resolveInfo.username
     }
     try {
       socket.emit('getMessage', value, (res) => {
@@ -138,11 +150,10 @@ const Home = () => {
   return (
     <>
       <UserLoginHd />
-      <DrinkRemind />
 
-      <Row gutter={16}>
-        <Col span={8}>
-          <Card title="取色器" bordered={false}>
+      <Row>
+        <Col span={7} offset={1}>
+          <Card style={{ minHeight: '200px' }} title="取色器" bordered={false}>
             <Space size={100}>
               <ColorPicker size="small" showText />
               <ArrowRightOutlined
@@ -154,55 +165,15 @@ const Home = () => {
             </Space>
           </Card>
         </Col>
-        <Col span={10}>
-          <Card
-            title="吃什么"
-            bordered={false}
-            extra={
-              <a
-                href="#"
-                onClick={() => {
-                  setEatSetting(true)
-                }}
-              >
-                设置
-              </a>
-            }
-          >
-            <LuckyWheel
-              width="300px"
-              height="300px"
-              ref={myLuckey}
-              blocks={blocks}
-              prizes={
-                selectCheckbox &&
-                selectCheckbox.map((item) => {
-                  return {
-                    title: '1元红包',
-                    background: '#f9e3bb',
-                    imgs: [
-                      {
-                        src: 'https://img0.baidu.com/it/u=146494919,1943694376&fm=253&fmt=auto&app=138&f=JPEG?w=5&h=5',
-                        width: '40%',
-                        height: '50%',
-                        top: '10%'
-                      }
-                    ]
-                  }
-                })
-              }
-              buttons={buttons}
-              defaultStyle={defaultStyle}
-              onStart={() => {
-                // 点击抽奖按钮会触发star回调
-                // 调用抽奖组件的play方法开始游戏
-                myLuckey.current.play()
-              }}
-            ></LuckyWheel>
-          </Card>
+        <Col span={8} offset={1}>
+          <DrinkRemind />
         </Col>
-        <Col span={6}>
-          <Card title="用户" bordered={false}>
+        <Col span={6} offset={1}>
+          <Card
+            style={{ minHeight: '500px', position: 'fixed', width: '200px' }}
+            title="用户"
+            bordered={false}
+          >
             {userList.length > 0
               ? userList.map((item, idnex) => {
                   return (
@@ -229,7 +200,63 @@ const Home = () => {
           </Card>
         </Col>
       </Row>
-      <Row gutter={16}>
+      <Row style={{marginTop:'15px'}}>
+        <Col span={10} offset={1}>
+          <Card
+            title="吃什么"
+            bordered={false}
+            // extra={
+            //   <a
+            //     href="#"
+            //     onClick={() => {
+            //       setEatSetting(true)
+            //     }}
+            //   >
+            //     设置
+            //   </a>
+            // }
+          >
+            <LuckyWheel
+              width="300px"
+              height="300px"
+              ref={myLuckey}
+              blocks={blocks}
+              // prizes={prizes}
+              prizes={
+                selectCheckbox &&
+                selectCheckbox.map((item, index) => {
+                  return {
+                    title: `苹果${index + 1}`,
+                    background: '#f9e3bb',
+                    fonts: [{ text: `苹果${index + 1}`, top: '68%' }],
+                    imgs: [
+                      {
+                        src: 'https://img0.baidu.com/it/u=146494919,1943694376&fm=253&fmt=auto&app=138&f=JPEG?w=5&h=5',
+                        width: '60%',
+                        top: '20%'
+                      }
+                    ]
+                  }
+                })
+              }
+              buttons={buttons}
+              defaultStyle={defaultStyle}
+              onStart={() => {
+                // 点击抽奖按钮会触发star回调
+                // 调用抽奖组件的play方法开始游戏
+                myLuckey.current.play()
+                setTimeout(() => {
+                  const index = (Math.random() * 6) >> 0
+                  myLuckey.current.stop(index)
+                }, 2500)
+              }}
+              onEnd={(val) => {
+                setSelectedEat(val.title)
+                setIsEatOpen(true)
+              }}
+            ></LuckyWheel>
+          </Card>
+        </Col>
         <Col span={6}>
           <Card
             title="社区"
@@ -240,7 +267,8 @@ const Home = () => {
           ></Card>
         </Col>
       </Row>
-      <Modal
+      <Row gutter={16}></Row>
+      {/* <Modal
         title="设置"
         open={eatSetting}
         onCancel={() => {
@@ -253,7 +281,7 @@ const Home = () => {
             setSelectCheckbox(e)
           }}
         />
-      </Modal>
+      </Modal> */}
       <Modal title={resolveInfo.username} open={isModalOpenChat} onCancel={handleCancelChat}>
         <List
           itemLayout="horizontal"
@@ -283,6 +311,16 @@ const Home = () => {
         >
           发送
         </Button>
+      </Modal>
+      <Modal
+        open={isEatOpen}
+        onCancel={() => {
+          setIsEatOpen(false)
+        }}
+      >
+        <p style={{ fontSize: '18px' }}>
+          今日适合吃<span style={{ fontSize: '24px', color: 'pink' }}>{selectedEat}</span>
+        </p>
       </Modal>
     </>
   )

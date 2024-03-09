@@ -72,7 +72,7 @@ const DrinkRemind = () => {
             设置
           </a>
         }
-        style={{ width: 300 }}
+        style={{ width: 300,minHeight:'200px' }}
       >
         {isCountDown ? (
           <>
