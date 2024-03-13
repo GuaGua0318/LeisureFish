@@ -1,4 +1,4 @@
-import { Button, Input, message } from 'antd'
+import { Button, Input, message, Col, Row } from 'antd'
 import React, { useState } from 'react'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
@@ -7,7 +7,7 @@ import UserLoginHd from '@renderer/components/userLoginHd'
 import { useNavigate } from 'react-router'
 
 const Editor = (props: Props) => {
-  const navigate = useNavigate
+  const navigate = useNavigate()
   const [value, setValue] = useState('')
   const [title, setTitle] = useState('')
 
@@ -20,34 +20,40 @@ const Editor = (props: Props) => {
     })
     if (result.code == 200) {
       message.success('发布成功')
-      navigate('/')
+      navigate('/community')
     }
   }
 
   return (
     <>
       <UserLoginHd />
-      <Input
-        placeholder="请输入标题"
-        value={title}
-        onChange={(val) => {
-          setTitle(val.target.value)
-        }}
-      />
-      ;
-      <ReactQuill
-        theme="snow"
-        value={value}
-        onChange={setValue}
-        style={{ background: '#fff', height: '80vh' }}
-      />
-      <Button
-        onClick={() => {
-          release()
-        }}
-      >
-        发布
-      </Button>
+      <Row>
+        <Col span={24} style={{ padding: '0 10px' }}>
+          <Input
+            placeholder="请输入标题"
+            value={title}
+            onChange={(val) => {
+              setTitle(val.target.value)
+            }}
+          />
+          ;
+          <ReactQuill
+            theme="snow"
+            value={value}
+            onChange={setValue}
+            style={{ background: '#fff', height: '79vh' }}
+          />
+          <Button
+            type="primary"
+            style={{ width: '100%', height: '40px' }}
+            onClick={() => {
+              release()
+            }}
+          >
+            发布
+          </Button>
+        </Col>
+      </Row>
     </>
   )
 }

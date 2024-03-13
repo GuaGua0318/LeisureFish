@@ -22,21 +22,7 @@ import { LuckyWheel, LuckyGrid } from 'react-luck-draw'
 import { io } from 'socket.io-client'
 import 'wc-waterfall'
 import foodImg from '../../assets/eat.webp'
-
-const data = [
-  {
-    title: 'Ant Design Title 1'
-  },
-  {
-    title: 'Ant Design Title 2'
-  },
-  {
-    title: 'Ant Design Title 3'
-  },
-  {
-    title: 'Ant Design Title 4'
-  }
-]
+import { getArticles } from '../Community/service'
 
 const socket = io('http://localhost:3001')
 socket.on('connect', () => {
@@ -93,11 +79,13 @@ const Home = () => {
   const [eatSetting, setEatSetting] = useState<boolean>(false)
   const [selectCheckbox, setSelectCheckbox] = useState([1, 2, 3, 4, 5, 6, 7, 8])
   const [userList, setUserList] = useState([])
-  const [isModalOpenChat, setIsModalOpenChat] = useState(true)
+  const [isModalOpenChat, setIsModalOpenChat] = useState(false)
   const [resolveInfo, setResolveInfo] = useState({})
   const [message, setMessage] = useState('')
   const [isEatOpen, setIsEatOpen] = useState(false)
   const [selectedEat, setSelectedEat] = useState('')
+  const [articleList, setArticleList] = useState([])
+  const [messageInfo, setMessageInfo] = useState([])
 
   const handleCancelChat = () => {
     setIsModalOpenChat(false)
@@ -111,7 +99,8 @@ const Home = () => {
     }
     try {
       socket.emit('getMessage', value, (res) => {
-        console.log('------dududu', res)
+        setMessageInfo(res)
+        setMessage('')
       })
     } catch (error) {
       console.log(error)
@@ -127,7 +116,6 @@ const Home = () => {
     }
     try {
       socket.emit('sendMessage', value, (res) => {
-        console.log('----res', res)
         if (res.code == 200) {
           getMessage()
         }
@@ -136,6 +124,17 @@ const Home = () => {
       console.log(error)
     }
   }
+
+  //获取数据列表
+  const fetchArticles = async () => {
+    const result = await getArticles()
+    if (result.code === 200) {
+      setArticleList(result.data)
+    }
+  }
+  useEffect(() => {
+    fetchArticles()
+  }, [])
 
   useEffect(() => {
     socket.emit('isOnline', (res) => {
@@ -146,6 +145,40 @@ const Home = () => {
       // setUserList(res)
     })
   }, [])
+
+  const Message = (item) => {
+    if (
+      item.sendUser === window.localStorage.getItem('username') &&
+      item.receiveUser === resolveInfo.username
+    ) {
+      return (
+        <Row>
+          <Col span={21} style={{ textAlign: 'right' }}>
+            <p>{item.sendUser}</p>
+            <p>{item.message}</p>
+          </Col>
+          <Col span={3}>
+            <Avatar size="large" icon={<UserOutlined />} style={{ marginTop: '20px' }} />
+          </Col>
+        </Row>
+      )
+    } else if (
+      item.sendUser !== window.localStorage.getItem('username') &&
+      item.sendUser === resolveInfo.username
+    ) {
+      return (
+        <Row>
+          <Col span={3}>
+            <Avatar size="large" icon={<UserOutlined />} style={{ marginTop: '20px' }} />
+          </Col>
+          <Col span={21}>
+            <p>{item.receiveUser}</p>
+            <p>{item.message}</p>
+          </Col>
+        </Row>
+      )
+    }
+  }
 
   return (
     <>
@@ -188,7 +221,12 @@ const Home = () => {
                         <Avatar size="large" icon={<UserOutlined />} />
                       </Col>
                       <Col span={18}>
-                        <div>{item.username}</div>
+                        <div>
+                          {item.username}
+                          {item.username === window.localStorage.getItem('username')
+                            ? ' (本人)'
+                            : null}
+                        </div>
                         <div>
                           <Badge key="green" color="green" text={item.isOnline ? '在线' : '离线'} />
                         </div>
@@ -200,7 +238,7 @@ const Home = () => {
           </Card>
         </Col>
       </Row>
-      <Row style={{marginTop:'15px'}}>
+      <Row style={{ marginTop: '15px' }}>
         <Col span={10} offset={1}>
           <Card
             title="吃什么"
@@ -257,14 +295,39 @@ const Home = () => {
             ></LuckyWheel>
           </Card>
         </Col>
-        <Col span={6}>
+        <Col span={6} style={{ marginLeft: '15px' }}>
           <Card
+            style={{ height: '300px' }}
             title="社区"
             bordered={false}
-            onClick={() => {
-              navigate('/community')
-            }}
-          ></Card>
+            extra={
+              <a href="#">
+                <ArrowRightOutlined
+                  style={{ fontSize: '20px' }}
+                  onClick={() => {
+                    navigate('/community')
+                  }}
+                />
+              </a>
+            }
+          >
+            <div style={{ height: '180px', overflow: 'hidden' }}>
+              {articleList &&
+                articleList.map((item, index) => {
+                  return (
+                    <p
+                      key={item.id}
+                      style={{ cursor: 'pointer', fontSize: '22px', padding: '0', margin: '0' }}
+                    >
+                      {item.title}
+                    </p>
+                  )
+                })}
+            </div>
+            <span style={{ fontSize: '26px', marginTop: '-10px', display: 'inline-block' }}>
+              ......
+            </span>
+          </Card>
         </Col>
       </Row>
       <Row gutter={16}></Row>
@@ -282,21 +345,14 @@ const Home = () => {
           }}
         />
       </Modal> */}
-      <Modal title={resolveInfo.username} open={isModalOpenChat} onCancel={handleCancelChat}>
+      <Modal title={resolveInfo.username} open={isModalOpenChat} onCancel={handleCancelChat} footer>
         <List
           itemLayout="horizontal"
-          dataSource={data}
-          renderItem={(item, index) => (
-            <Row>
-              <Col span={3}>
-                <Avatar size="large" icon={<UserOutlined />} style={{ marginTop: '20px' }} />
-              </Col>
-              <Col span={21}>
-                <p>username</p>
-                <p>message</p>
-              </Col>
-            </Row>
-          )}
+          dataSource={messageInfo}
+          style={{ height: '300px', overflowY: 'auto' }}
+          renderItem={(item, index) => {
+            return Message(item)
+          }}
         />
         <Input
           value={message}
@@ -308,6 +364,7 @@ const Home = () => {
           onClick={() => {
             sendMessage()
           }}
+          type="primary"
         >
           发送
         </Button>
